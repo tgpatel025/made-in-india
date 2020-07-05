@@ -1,0 +1,13 @@
+<div class="search-bar-wrapper" [ngStyle]="{ 'width.px' : searchbarWidth, 'height.px' : searchbarHeight, 'border-radius.px' : searchbarHeight - 12 }">
+  <div class="icon-and-input">
+    <form class="search-form">
+      <img class="search-icon" [ngStyle]="{ 'height.px': searchbarHeight - 12 }" src="../../../../../../assets/Images/icon-search.svg">
+      <input class="search-input" type="text" placeholder="Search for anything" [formControl]="myControl" [matAutocomplete]="search">
+      <mat-autocomplete #search="matAutocomplete" class="search-auto-complete" (opened)="autoCompleteOpen($event)" (closed)="autoCompleteClosed($event)">
+        <mat-option class="search-option" *ngFor="let option of filteredOptions | async" [value]="option" [ngStyle]="{'height.px' : searchbarHeight}">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+    </form>
+  </div>
+</div>

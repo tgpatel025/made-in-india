@@ -1,0 +1,10 @@
+.cdk-overlay-container {
+    .cdk-overlay-pane {
+        left: 0px !important;
+        .search-auto-complete {
+            border-top: 1px solid #afafaf;
+            box-shadow: 3px 4px 6px #dfdfdf;
+            overflow: hidden;
+        }
+    }
+}
