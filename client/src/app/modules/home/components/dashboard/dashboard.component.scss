@@ -1,0 +1,28 @@
+.dashboard {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .search-bar-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .search-bar {
+            margin: 24px;
+        }
+        .search-button {
+            border: 0;
+            height: 36px;
+            width: 150px;
+            outline: none;
+            border-radius: 36px;
+            &:hover {
+                background: white;
+                border: 1px solid #afafaf;
+                box-shadow: 3px 3px 6px #dfdfdf;
+            }
+        }
+    }
+}
