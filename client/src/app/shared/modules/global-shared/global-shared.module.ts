@@ -5,23 +5,28 @@ import { ProductCardComponent } from './components/product-card/product-card.com
 import { InformationDialogComponent } from './components/information-dialog/information-dialog.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
     SearchBarComponent,
     ProductCardComponent,
-    InformationDialogComponent
+    InformationDialogComponent,
+    HeaderComponent
   ],
   imports: [
     CommonModule,
     MatAutocompleteModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatButtonModule
   ],
   exports: [
-    SearchBarComponent
+    SearchBarComponent,
+    HeaderComponent
   ]
 })
 export class GlobalSharedModule { }

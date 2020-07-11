@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
@@ -33,14 +32,15 @@ export class SearchBarComponent implements OnInit {
   }
 
   autoCompleteOpen(event) {
-    $('.search-bar-wrapper').css('border-radius' , `${this.searchbarHeight - 12}px ${this.searchbarHeight - 12}px 0 0`);
-    $('.search-auto-complete').css('border-radius', `0 0 ${this.searchbarHeight - 12}px ${this.searchbarHeight - 12}px`);
+    $('.search-bar-wrapper').css('border-radius' , `${this.searchbarHeight / 2}px ${this.searchbarHeight / 2}px 0 0`);
+    $('.search-auto-complete').css('border-radius', `0 0 ${this.searchbarHeight / 2}px ${this.searchbarHeight / 2}px`);
     $('.search-auto-complete').css('max-height' , this.searchbarHeight * 5);
     $('.cdk-overlay-pane').css('width', $('.search-bar-wrapper').width());
+    $('.cdk-overlay-pane').css('tranform', `translateX(${this.searchbarHeight + 12}px)`);
   }
 
   autoCompleteClosed(event) {
-    $('.search-bar-wrapper').css('border-radius' , `${this.searchbarHeight - 12}px`);
+    $('.search-bar-wrapper').css('border-radius' , `${this.searchbarHeight / 2}px`);
   }
 
 }
