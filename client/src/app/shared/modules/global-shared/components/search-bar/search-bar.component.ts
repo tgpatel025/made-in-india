@@ -32,15 +32,16 @@ export class SearchBarComponent implements OnInit {
   }
 
   autoCompleteOpen(event) {
-    $('.search-bar-wrapper').css('border-radius' , `${this.searchbarHeight / 2}px ${this.searchbarHeight / 2}px 0 0`);
+    $('.search-bar-wrapper').css('border-radius', `${this.searchbarHeight / 2}px ${this.searchbarHeight / 2}px 0 0`);
     $('.search-auto-complete').css('border-radius', `0 0 ${this.searchbarHeight / 2}px ${this.searchbarHeight / 2}px`);
-    $('.search-auto-complete').css('max-height' , this.searchbarHeight * 5);
-    $('.cdk-overlay-pane').css('width', $('.search-bar-wrapper').width());
+    $('.search-auto-complete').css('max-height', this.searchbarHeight * 5);
+    $('.search-auto-complete').css('width', `${this.searchbarWidth}`);
+    $('.cdk-overlay-pane').css('width', `${this.searchbarWidth}`);
     $('.cdk-overlay-pane').css('tranform', `translateX(${this.searchbarHeight + 12}px)`);
   }
 
   autoCompleteClosed(event) {
-    $('.search-bar-wrapper').css('border-radius' , `${this.searchbarHeight / 2}px`);
+    $('.search-bar-wrapper').css('border-radius', `${this.searchbarHeight / 2}px`);
   }
 
 }

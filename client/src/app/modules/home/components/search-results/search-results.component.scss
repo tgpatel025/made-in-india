@@ -1,0 +1,21 @@
+@import "../../../../../assets/scss/variable_color.scss";
+
+.search-result-page {
+    .search-bar-wrapper {
+        width: fit-content;
+        padding: 24px 0;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+    .search-result-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 24px 100px;
+        .products {
+            margin: 0 12px;
+        }
+    }
+}

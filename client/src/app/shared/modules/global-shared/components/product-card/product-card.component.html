@@ -1,1 +1,32 @@
-<p>product-card works!</p>
+<mat-card class="product-card">
+    <mat-card-header>
+        <div mat-card-avatar class="product-site-logo"></div>
+        <mat-card-title>Shiba Inu</mat-card-title>
+        <mat-card-subtitle>
+            <div class="subs">
+                <span class="origin-country">Made in India</span>
+                <img class="verified-icon" src="../../../../../../assets/Images/correct.svg">
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+    <mat-card-actions>
+        <div class="price-wrapper">
+            <mat-chip-list class="mat-chip-list-stacked">
+                <mat-chip>
+                    <span class="rs">₹</span>
+                    10000
+                </mat-chip>
+              </mat-chip-list>
+        </div>
+        <div class="link-button-wrapper">
+            <button class="link-button" mat-button>
+                Details
+            </button>
+            <button class="link-button flipkart-link" mat-button>
+                Go to Flipkart
+                <img src="../../../../../../assets/Images/link.svg">
+            </button>
+        </div>
+    </mat-card-actions>
+</mat-card>

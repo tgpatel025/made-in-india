@@ -3,7 +3,9 @@
 # compiled output
 /dist
 /tmp
+/webscappingenv
 /out-tsc
+/.vscode
 # Only exists if Bazel was run
 /bazel-out
 

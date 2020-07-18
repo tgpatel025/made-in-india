@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatChip, MatChipList } from '@angular/material/chips';
 
 @Component({
   selector: 'app-product-card',

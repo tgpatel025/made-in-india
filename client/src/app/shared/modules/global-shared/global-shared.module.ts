@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './components/header/header.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -22,11 +24,14 @@ import { HeaderComponent } from './components/header/header.component';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule
   ],
   exports: [
     SearchBarComponent,
-    HeaderComponent
+    HeaderComponent,
+    ProductCardComponent
   ]
 })
 export class GlobalSharedModule { }

@@ -1,3 +1,5 @@
+@import '../../../../../assets/scss/variable_color.scss';
+
 .dashboard {
     width: 100vw;
     height: 100vh;
@@ -17,11 +19,11 @@
             height: 36px;
             width: 150px;
             outline: none;
+            color: $ternary;
+            background: $black;
             border-radius: 36px;
             &:hover {
-                background: white;
-                border: 1px solid #afafaf;
-                box-shadow: 3px 3px 6px #dfdfdf;
+                box-shadow: 0 0 3px $black;
             }
         }
     }

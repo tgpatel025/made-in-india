@@ -5,6 +5,7 @@ import { SearchResultsComponent } from './modules/home/components/search-results
 
 
 const routes: Routes = [
+  { path: '', component: DashboardComponent},
   { path: 'dashboard', component: DashboardComponent },
   { path: 'search', component: SearchResultsComponent }
 ];

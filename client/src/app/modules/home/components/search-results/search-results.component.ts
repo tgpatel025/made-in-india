@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-search-results',
@@ -7,9 +7,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchResultsComponent implements OnInit {
 
+  searchBarWidth: number;
+
   constructor() { }
 
   ngOnInit(): void {
+    this.searchBarWidth = window.innerWidth - 200;
+  }
+
+  @HostListener('resize')
+  onResize() {
+    this.searchBarWidth = window.innerWidth - 200;
   }
 
 }
