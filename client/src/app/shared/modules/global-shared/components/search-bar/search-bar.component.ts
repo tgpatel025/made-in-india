@@ -1,7 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, timestamp } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ApiCallService } from '../../../../services/api-call.service';
+import { PredictiveTermModel } from '../../../../models/predictive-term.model';
+
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
@@ -10,26 +13,25 @@ import { Observable } from 'rxjs';
 export class SearchBarComponent implements OnInit {
 
   myControl = new FormControl();
-  filteredOptions: Observable<string[]>;
-  options: any[] = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'];
+  filteredOptions: Observable<PredictiveTermModel[]>;
+  options: PredictiveTermModel[] = [];
 
   @Input() searchbarWidth: number;
   @Input() searchbarHeight: number;
+  @Output() searchString = new EventEmitter<any>();
 
-  constructor() { }
+  constructor(
+    private apiCallService: ApiCallService
+  ) { }
 
   ngOnInit() {
-    this.filteredOptions = this.myControl.valueChanges
+   this.myControl.valueChanges
       .pipe(
         startWith(''),
-        map(value => this.filter(value))
+        map(value => this.getInput(value))
       );
   }
 
-  private filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
-  }
 
   autoCompleteOpen(event) {
     $('.search-bar-wrapper').css('border-radius', `${this.searchbarHeight / 2}px ${this.searchbarHeight / 2}px 0 0`);
@@ -42,6 +44,30 @@ export class SearchBarComponent implements OnInit {
 
   autoCompleteClosed(event) {
     $('.search-bar-wrapper').css('border-radius', `${this.searchbarHeight / 2}px`);
+  }
+
+  getInput(input: string) {
+    if (this.options && this.options.length) {
+      this.options.forEach(option => {
+        if (option.term.match(input)) {
+          this.searchString.emit(option);
+        } else {
+          const predictiveTerm = new PredictiveTermModel();
+          predictiveTerm.term = input;
+          this.searchString.emit(predictiveTerm);
+        }
+      });
+    } else {
+      const predictiveTerm = new PredictiveTermModel();
+      predictiveTerm.term = input;
+      this.searchString.emit(predictiveTerm);
+    }
+    this.options = [];
+    if (input.length > 2) {
+      this.apiCallService.getPredictiveTerms(input).then(response => {
+        this.options = response;
+      });
+    }
   }
 
 }

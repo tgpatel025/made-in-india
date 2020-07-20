@@ -34,7 +34,7 @@
       "punctuation",
       "symbol"
     ],
-    "min_gram": 3,
+    "min_gram": 1,
     "type": "ngram",
     "max_gram": 50
   },

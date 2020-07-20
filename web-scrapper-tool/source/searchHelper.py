@@ -101,20 +101,39 @@ def create_phrase_fixer_index():
 def store_record(record):
     try:
         if not es_object.exists(index='products', id=record['Product_ID']):
-            outcome1 = es_object.index(index='products', body=record, id=record['Product_ID'])
+            es_object.index(index='products', body=record, id=record['Product_ID'])
+        return
+    except Exception as ex:
+        return str(ex)
+
+
+def store_phrase(record):
+    try:
         phrase_fixer = {
-            "text": record['Product_Name']
+            "text": record['Name']
         }
-        if not es_object.exists(index='phrase-fixer', id=record['Product_ID']):
-            outcome2 = es_object.index(index='phrase-fixer', body=phrase_fixer, id=record['Product_ID'])
+        if record['ID']:
+            if not es_object.exists(index='keywords-suggester', id=record['ID']):
+                return es_object.index(index='keywords-suggester', body=phrase_fixer, id=record['ID'])
+        else:
+            return es_object.index(index='keywords-suggester', body=phrase_fixer)
+        return
+    except Exception as ex:
+        return str(ex)
+
+
+def store_terms(record):
+    try:
         keyword_suggester = {
-            "text": record['Product_Name'],
-            "generic_name": record['Product_Generic_Name'],
-            "textKeyword": record['Product_Name']
+            "text": record['Name'],
+            "generic_name": record['Generic_Name'],
+            "textKeyword": record['Name']
         }
-        if not es_object.exists(index='keywords-suggester', id=record['Product_ID']):
-            outcome3 = es_object.index(index='keywords-suggester', body=keyword_suggester, id=record['Product_ID'])
-        return [outcome1, outcome2, outcome3]
+        if record['ID']:
+            if not es_object.exists(index='keywords-suggester', id=record['ID']):
+                return es_object.index(index='keywords-suggester', body=keyword_suggester, id=record['ID'])
+        else:
+            return es_object.index(index='keywords-suggester', body=keyword_suggester)
     except Exception as ex:
         return str(ex)
 
@@ -122,7 +141,6 @@ def store_record(record):
 def get_predictive_words(term):
     query = {
         "size": 5,
-        "_source": False,
         "query": {
             "match": {
                 "text": str(term)
@@ -136,10 +154,10 @@ def get_predictive_words(term):
                 "text": {}
             },
             "pre_tags": [
-                "<em>"
+                "<b>"
             ],
             "post_tags": [
-                "</em>"
+                "</b>"
             ]
         }
     }
@@ -168,8 +186,8 @@ def get_phrase_fixer(text):
                         "prune": True,
                     },
                     "highlight": {
-                        "pre_tag": "<em>",
-                        "post_tag": "</em>"
+                        "pre_tag": "<b>",
+                        "post_tag": "</b>"
                     }
                 }
             }

@@ -66,13 +66,10 @@ def spec_scrapping(link, data_id, generic_name):
     except NoSuchElementException:
         img_url = driver.find_element_by_xpath('//div[@class="_3ZJShS _31bMyl"]//img').get_attribute("src")
 
-    outcome = searchHelper.store_record({'Product_ID': data_id, 'Product_Name': name1, 'Product_Price': price1,
-                               "Product_Generic_Name": generic_name,
-                               'Product_Highlights': highlights_ul1,
-                               'Product_Rating': rating1,
-                               'Product_Img_Url': img_url,
-                               'Product_Link': link})
-    print(outcome)
+    searchHelper.store_record({'Product_ID': data_id, 'Product_Name': name1, 'Product_Price': price1,
+                               "Product_Generic_Name": generic_name, 'Product_Highlights': highlights_ul1,
+                               'Product_Rating': rating1, 'Product_Img_Url': img_url, 'Product_Link': link})
+    searchHelper.store_terms({'ID': data_id, 'Name': name1, "Generic_Name": generic_name})
     return
 
 

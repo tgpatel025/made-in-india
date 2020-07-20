@@ -1,8 +1,8 @@
 <div class="dashboard">
     <div class="search-bar-wrapper">
         <div class="search-bar">
-            <app-search-bar [searchbarWidth]="500" [searchbarHeight]="48"></app-search-bar>
+            <app-search-bar [searchbarWidth]="500" (searchString)="getSearchText($event)" [searchbarHeight]="48"></app-search-bar>
         </div>
-        <button class="search-button">Search</button>
+        <button class="search-button" (click)="getSearchResult()">Search</button>
     </div>
 </div>

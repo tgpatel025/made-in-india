@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeModule } from './modules/home/home.module';
 import { GlobalSharedModule } from './shared/modules/global-shared/global-shared.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { GlobalSharedModule } from './shared/modules/global-shared/global-shared
     AppRoutingModule,
     BrowserAnimationsModule,
     HomeModule,
-    GlobalSharedModule
+    GlobalSharedModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
