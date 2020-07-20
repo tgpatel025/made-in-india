@@ -1,44 +1,35 @@
 import logging
 import json
-from .models import *
 from elasticsearch import Elasticsearch
+from io import StringIO
+
+file = open('elastic-search-models.json')
+elasticsearch_data = json.load(file)
 
 
 def connect_elasticsearch():
     es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
-    if es.ping():
-        print('Connected Successfully')
-    else:
-        print('Aww could not connect')
-    return es
+    try:
+        if es.ping():
+            return es
+    except Exception as es:
+        return es
 
 
-def create_products_index(es_object, index_name='products'):
+es_object = connect_elasticsearch()
+
+
+def create_products_index():
+    index_name = "products"
     settings = {
         "settings": {
-            "number_of_shards": 3,
-            "number_of_replicas": 1
-        },
-        "mappings": {
-            "dynamic": "strict",
-            "properties": {
-                "productGuid": {
-                    "type": "text"
-                },
-                "dataId": {
-                    "type": "text"
-                },
-                "fullName": {
-                    "type": "text"
-                },
-                "price": {
-                    "type": "text"
-                },
-                "origin": {
-                    "type": "text"
-                }
+            "index": {
+                "number_of_shards": 3,
+                "number_of_replicas": 1
             }
-        }
+        },
+        "aliases": {},
+        "mappings": elasticsearch_data["products"]
     }
     try:
         if not es_object.indices.exists(index_name):
@@ -48,101 +39,171 @@ def create_products_index(es_object, index_name='products'):
         print(str(ex))
 
 
-def create_product_metadata_index(es_object, index_name='product_metadata'):
+def create_keywords_suggester_index():
+    index_name = "keywords-suggester"
     settings = {
         "settings": {
-            "number_of_shards": 3,
-            "number_of_replicas": 1
-        },
-        "mappings": {
-            "dynamic": "strict",
-            "properties": {
-                "productGuid": {
-                    "type": "text"
-                },
-                "productData1": {
-                    "type": "text"
-                },
-                "productData2": {
-                    "type": "text"
-                },
-                "productData3": {
-                    "type": "text"
-                },
-                "productData4": {
-                    "type": "text"
-                },
-                "productData5": {
-                    "type": "text"
-                },
-                "productData6": {
-                    "type": "text"
-                },
-                "productData7": {
-                    "type": "text"
-                },
-                "productData8": {
-                    "type": "text"
-                },
-                "productData9": {
-                    "type": "text"
-                },
-                "productData10": {
-                    "type": "text"
+            "index": {
+                "number_of_shards": 1,
+                "number_of_replicas": 0,
+                "max_ngram_diff": 50,
+                "analysis": {
+                    "analyzer": {
+                        "nGram_analyzer": elasticsearch_data["nGram_analyzer"],
+                        "whitespace_analyzer": elasticsearch_data["whitespace_analyzer"]
+                    },
+                    "tokenizer": {
+                        "nGram_filter": elasticsearch_data["nGram_filter"]
+                    }
                 }
             }
-        }
+        },
+        "aliases": {},
+        "mappings": elasticsearch_data["keyword-suggester"]
     }
     try:
         if not es_object.indices.exists(index_name):
             es_object.indices.create(index=index_name, body=settings)
-            print('Created Product Metadata Index')
+            print('Created Term Suggester Index')
     except Exception as ex:
         print(str(ex))
 
 
-def suggester(es_object, term, index_name='products'):
-    suggest = {
+def create_phrase_fixer_index():
+    index_name = "phrase-fixer"
+    settings = {
+        "settings": {
+            "index": {
+                "number_of_shards": 1,
+                "number_of_replicas": 0,
+                "max_ngram_diff": 50,
+                "analysis": {
+                    "filter": {
+                        "shingle": elasticsearch_data["shingle"]
+                    },
+                    "analyzer": {
+                        "trigram": elasticsearch_data["trigram"]
+                    }
+                }
+            }
+        },
+        "aliases": {},
+        "mappings": elasticsearch_data["phrase-fixer"]
+    }
+    try:
+        if not es_object.indices.exists(index_name):
+            es_object.indices.create(index=index_name, body=settings)
+            print('Created Phrase Fixer Index')
+    except Exception as ex:
+        print(str(ex))
+
+
+def store_record(record):
+    try:
+        if not es_object.exists(index='products', id=record['Product_ID']):
+            outcome1 = es_object.index(index='products', body=record, id=record['Product_ID'])
+        phrase_fixer = {
+            "text": record['Product_Name']
+        }
+        if not es_object.exists(index='phrase-fixer', id=record['Product_ID']):
+            outcome2 = es_object.index(index='phrase-fixer', body=phrase_fixer, id=record['Product_ID'])
+        keyword_suggester = {
+            "text": record['Product_Name'],
+            "generic_name": record['Product_Generic_Name'],
+            "textKeyword": record['Product_Name']
+        }
+        if not es_object.exists(index='keywords-suggester', id=record['Product_ID']):
+            outcome3 = es_object.index(index='keywords-suggester', body=keyword_suggester, id=record['Product_ID'])
+        return [outcome1, outcome2, outcome3]
+    except Exception as ex:
+        return str(ex)
+
+
+def get_predictive_words(term):
+    query = {
+        "size": 5,
+        "_source": False,
+        "query": {
+            "match": {
+                "text": str(term)
+            }
+        },
+        "sort": [
+            "_score"
+        ],
+        "highlight": {
+            "fields": {
+                "text": {}
+            },
+            "pre_tags": [
+                "<em>"
+            ],
+            "post_tags": [
+                "</em>"
+            ]
+        }
+    }
+    try:
+        return es_object.search(index='keywords-suggester', body=json.dumps(query))
+    except Exception as ex:
+        return str(ex)
+
+
+def get_phrase_fixer(text):
+    query = {
         "suggest": {
-            "term-suggest": {
-                "prefix": term,
-                "completion": {
-                    "field": "fullName",
-                    "size": 5
-                },
-                "fuzzy": {
-                    "fuzziness": 1
+            "phrase-fixer": {
+                "text": text,
+                "phrase": {
+                    "field": "text.trigram",
+                    "confidence": 0,
+                    "collate": {
+                        "query": {
+                            "source": {
+                                "match_phrase": {
+                                    "title": "{{suggestion}}"
+                                }
+                            }
+                        },
+                        "prune": True,
+                    },
+                    "highlight": {
+                        "pre_tag": "<em>",
+                        "post_tag": "</em>"
+                    }
                 }
             }
         }
     }
     try:
-        return es_object.suggest(index=index_name, body=suggest)
+        return es_object.search(index='phrase-fixer', body=query)
     except Exception as ex:
         return str(ex)
 
 
-def store_record(es_object, index_name, record):
-    try:
-        return es_object.index(index=index_name, doc_type='salads', body=record)
-    except Exception as ex:
-        return ex
-
-
-def search(es_object, index_name, query_term):
+def search(term):
     query = {
         "query": {
             "match": {
-                "fullName": query_term
+                "Product_Name": {
+                    "query": str(term)
+                }
             }
         }
     }
+    io = StringIO()
     try:
-        return es_object.search(index=index_name, body=json.dump(query))
+        return es_object.search(index='products', body=json.dumps(query))
     except Exception as ex:
-        return ex
+        return str(ex)
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.ERROR)
 
+create_products_index()
+create_keywords_suggester_index()
+create_phrase_fixer_index()
+# outcome = search('gas stove 3 burner')
+# outcome = get_predictive_words('gas')
+# print(json.dumps(outcome, sort_keys=True, indent=4))

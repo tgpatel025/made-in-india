@@ -1,18 +1,17 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import ElementNotInteractableException
+from source import searchHelper
 import re
 import pandas as pd
+
 # Creating data base
 column = ['Product_ID', 'Product_Name', 'Product_Price', 'Product_Highlights', 'Product_Rating', 'Product_Generic_Name',
           'Product_Img_Url', 'Product_Link']
 database = pd.DataFrame(columns=column)
-
 # Chorme options
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--headless')
@@ -22,7 +21,8 @@ prefs = {"profile.default_content_setting_values.notifications": 2}
 chrome_options.add_experimental_option("prefs", prefs)
 
 # driver Instance
-driver = webdriver.Chrome(executable_path="F:\made-in-india\web-scrapper-tool\source\chromedriver.exe", options=chrome_options)
+driver = webdriver.Chrome(executable_path="F:\made-in-india\web-scrapper-tool\source\chromedriver.exe",
+                          options=chrome_options)
 
 
 def data_id_processing(link):
@@ -57,7 +57,7 @@ def spec_scrapping(link, data_id, generic_name):
             rating1 = "N/A"
     try:
         highlights_ul = driver.find_elements_by_xpath('//div[@class="_3WHvuP"]//ul//li')
-        highlights_ul1 = [item.get_attribute("outerText") for item in highlights_ul]
+        highlights_ul1 = [{"highlight": item.get_attribute("outerText")} for item in highlights_ul]
     except NoSuchElementException:
         highlights_ul1 = []
 
@@ -66,10 +66,13 @@ def spec_scrapping(link, data_id, generic_name):
     except NoSuchElementException:
         img_url = driver.find_element_by_xpath('//div[@class="_3ZJShS _31bMyl"]//img').get_attribute("src")
 
-    database = database.append(
-        {'Product_ID': data_id, 'Product_Name': name1, 'Product_Price': price1, 'Product_Highlights': highlights_ul1,
-         'Product_Rating': rating1, 'Product_Generic_Name': generic_name, 'Product_Img_Url': img_url,
-         'Product_Link': link}, ignore_index=True)
+    outcome = searchHelper.store_record({'Product_ID': data_id, 'Product_Name': name1, 'Product_Price': price1,
+                               "Product_Generic_Name": generic_name,
+                               'Product_Highlights': highlights_ul1,
+                               'Product_Rating': rating1,
+                               'Product_Img_Url': img_url,
+                               'Product_Link': link})
+    print(outcome)
     return
 
 
@@ -184,7 +187,7 @@ def get_product_link(main_product_url):
 
 # Main Code
 
-product = "tv"
+product = "Tvs"
 url = "https://www.flipkart.com/search?q=" + product
 
 get_product_link(url)

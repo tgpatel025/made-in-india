@@ -1,6 +1,5 @@
 import flask
 from flask import request, jsonify, make_response
-# from .searchHelper import *
 # from .constants import *
 
 app = flask.Flask(__name__)
