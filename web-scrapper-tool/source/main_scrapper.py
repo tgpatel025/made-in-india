@@ -21,7 +21,7 @@ prefs = {"profile.default_content_setting_values.notifications": 2}
 chrome_options.add_experimental_option("prefs", prefs)
 
 # driver Instance
-driver = webdriver.Chrome(executable_path="F:\made-in-india\web-scrapper-tool\source\chromedriver.exe",
+driver = webdriver.Chrome(executable_path=".\chromedriver.exe",
                           options=chrome_options)
 
 

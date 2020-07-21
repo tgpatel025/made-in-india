@@ -76,7 +76,7 @@ def create_phrase_fixer_index():
             "index": {
                 "number_of_shards": 1,
                 "number_of_replicas": 0,
-                "max_ngram_diff": 50,
+                "max_shingle_diff": 50,
                 "analysis": {
                     "filter": {
                         "shingle": elasticsearch_data["shingle"]
