@@ -1,8 +1,8 @@
 import flask
 from flask import request, jsonify, make_response
 from source import searchHelper
-import json
 from flask_cors import CORS
+import main_scrapper as ms
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -11,16 +11,22 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 @app.route('/api/search', methods=['GET'])
 def api_search():
-    if 'q' and 'gname' in request.args:
+    if 'q' in request.args:
+        highlighted = None
         try:
+            ms.search_query = str(request.args['q'])
+            ms.get_product_link(ms.url)
             phrase = searchHelper.get_phrase_fixer(str(request.args['q']))
-            text = phrase["suggest"]["phrase-fixer"][0]["options"][0]["text"]
-            highlighted = phrase["suggest"]["phrase-fixer"][0]["options"][0]["highlighted"]
-            searchHelper.store_terms({'ID': None, 'Name': text, "Generic_Name": str(request.args['gname'])})
+            if len(phrase["suggest"]["phrase-fixer"][0]["options"]) > 0:
+                text = phrase["suggest"]["phrase-fixer"][0]["options"][0]["text"]
+                highlighted = phrase["suggest"]["phrase-fixer"][0]["options"][0]["highlighted"]
+            else:
+                text = phrase["suggest"]["phrase-fixer"][0]["text"]
+            searchHelper.store_terms(text)
             products = searchHelper.search(text)
             response = []
-            for product in products["hits"]["hits"]:
-                response.append(product["_source"])
+            for p in products["hits"]["hits"]:
+                response.append(p["_source"])
         except Exception as e:
             return make_response(jsonify(e), 500)
     else:
@@ -35,8 +41,7 @@ def api_predictive_term():
             terms = searchHelper.get_predictive_words(str(request.args['q']))
             response = []
             for term in terms["hits"]["hits"]:
-                obj = {"genericName": term["_source"]["generic_name"], "term": term["highlight"]["text"][0]}
-                response.append(obj)
+                response.append(term["highlight"]["text"][0])
         except Exception as e:
             return make_response(jsonify(e), 500)
     else:

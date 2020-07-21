@@ -2,7 +2,7 @@
   "shingle": {
     "type": "shingle",
     "min_shingle_size": 2,
-    "max_shingle_size": 10
+    "max_shingle_size": 3
   },
   "nGram_analyzer": {
     "filter": [
@@ -77,9 +77,6 @@
         "analyzer": "nGram_analyzer",
         "search_analyzer": "whitespace_analyzer"
       },
-      "generic_name": {
-        "type": "text"
-      },
       "textKeyword": {
         "type": "keyword"
       }
@@ -88,7 +85,7 @@
   "phrase-fixer": {
     "properties": {
       "text": {
-        "type": "text",
+        "type": "keyword",
         "fields": {
           "trigram": {
             "type": "text",

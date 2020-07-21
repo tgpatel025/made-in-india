@@ -1,7 +1,7 @@
+import hashlib
 import logging
 import json
 from elasticsearch import Elasticsearch
-from io import StringIO
 
 file = open('elastic-search-models.json')
 elasticsearch_data = json.load(file)
@@ -76,7 +76,6 @@ def create_phrase_fixer_index():
             "index": {
                 "number_of_shards": 1,
                 "number_of_replicas": 0,
-                "max_shingle_diff": 50,
                 "analysis": {
                     "filter": {
                         "shingle": elasticsearch_data["shingle"]
@@ -100,40 +99,30 @@ def create_phrase_fixer_index():
 
 def store_record(record):
     try:
-        if not es_object.exists(index='products', id=record['Product_ID']):
-            es_object.index(index='products', body=record, id=record['Product_ID'])
-        return
+        return es_object.index(index='products', body=record, id=record['Product_ID'])
     except Exception as ex:
         return str(ex)
 
 
-def store_phrase(record):
+def store_phrase(text):
     try:
         phrase_fixer = {
-            "text": record['Name']
+            "text": text
         }
-        if record['ID']:
-            if not es_object.exists(index='keywords-suggester', id=record['ID']):
-                return es_object.index(index='keywords-suggester', body=phrase_fixer, id=record['ID'])
-        else:
-            return es_object.index(index='keywords-suggester', body=phrase_fixer)
-        return
+        hash_id = hashlib.sha1(text.encode())
+        return es_object.index(index='phrase-fixer', body=phrase_fixer, id=hash_id.hexdigest())
     except Exception as ex:
         return str(ex)
 
 
-def store_terms(record):
+def store_terms(text):
     try:
         keyword_suggester = {
-            "text": record['Name'],
-            "generic_name": record['Generic_Name'],
-            "textKeyword": record['Name']
+            "text": text,
+            "textKeyword": text
         }
-        if record['ID']:
-            if not es_object.exists(index='keywords-suggester', id=record['ID']):
-                return es_object.index(index='keywords-suggester', body=keyword_suggester, id=record['ID'])
-        else:
-            return es_object.index(index='keywords-suggester', body=keyword_suggester)
+        hash_id = hashlib.sha1(text.encode())
+        return es_object.index(index='keywords-suggester', body=keyword_suggester, id=hash_id.hexdigest())
     except Exception as ex:
         return str(ex)
 
@@ -183,7 +172,7 @@ def get_phrase_fixer(text):
                                 }
                             }
                         },
-                        "prune": True,
+                        "prune": True
                     },
                     "highlight": {
                         "pre_tag": "<b>",
@@ -202,14 +191,16 @@ def get_phrase_fixer(text):
 def search(term):
     query = {
         "query": {
-            "match": {
-                "Product_Name": {
-                    "query": str(term)
-                }
+            "multi_match": {
+                "query": str(term),
+                "fields": [
+                    "Product_Name",
+                    "Product_Generic_Name"
+                ],
+                "fuzziness": "auto"
             }
         }
     }
-    io = StringIO()
     try:
         return es_object.search(index='products', body=json.dumps(query))
     except Exception as ex:
@@ -222,6 +213,3 @@ if __name__ == '__main__':
 create_products_index()
 create_keywords_suggester_index()
 create_phrase_fixer_index()
-# outcome = search('gas stove 3 burner')
-# outcome = get_predictive_words('gas')
-# print(json.dumps(outcome, sort_keys=True, indent=4))

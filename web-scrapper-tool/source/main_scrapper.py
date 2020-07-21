@@ -7,6 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from source import searchHelper
 import re
 import pandas as pd
+import hashlib
 
 # Creating data base
 column = ['Product_ID', 'Product_Name', 'Product_Price', 'Product_Highlights', 'Product_Rating', 'Product_Generic_Name',
@@ -69,7 +70,10 @@ def spec_scrapping(link, data_id, generic_name):
     searchHelper.store_record({'Product_ID': data_id, 'Product_Name': name1, 'Product_Price': price1,
                                "Product_Generic_Name": generic_name, 'Product_Highlights': highlights_ul1,
                                'Product_Rating': rating1, 'Product_Img_Url': img_url, 'Product_Link': link})
-    searchHelper.store_terms({'ID': data_id, 'Name': name1, "Generic_Name": generic_name})
+    searchHelper.store_terms(name1)
+    searchHelper.store_terms(generic_name)
+    searchHelper.store_phrase(name1)
+    searchHelper.store_phrase(generic_name)
     return
 
 
@@ -184,7 +188,7 @@ def get_product_link(main_product_url):
 
 # Main Code
 
-product = "Tvs"
-url = "https://www.flipkart.com/search?q=" + product
+search_query = ''
+url = "https://www.flipkart.com/search?q=" + search_query
 
-get_product_link(url)
+# get_product_link(url)

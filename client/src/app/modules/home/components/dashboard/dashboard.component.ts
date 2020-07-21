@@ -10,7 +10,7 @@ import { SearchResponseModel } from 'src/app/shared/models/product-details.model
 })
 export class DashboardComponent implements OnInit {
 
-  searchString: PredictiveTermModel = new PredictiveTermModel();
+  searchString: string;
   searchResponse: SearchResponseModel = new SearchResponseModel();
   constructor(
     private apiCallService: ApiCallService
@@ -19,12 +19,12 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getSearchText(searchText: PredictiveTermModel) {
+  getSearchText(searchText: string) {
     this.searchString = searchText;
   }
 
   getSearchResult() {
-    this.apiCallService.search(this.searchString.term, this.searchString.genericName).then(response => {
+    this.apiCallService.search(this.searchString).then(response => {
       this.searchResponse = response;
       console.log(response);
     });

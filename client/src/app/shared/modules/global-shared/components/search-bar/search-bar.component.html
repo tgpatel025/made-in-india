@@ -3,8 +3,9 @@
     <form class="search-form">
       <img class="search-icon" [ngStyle]="{ 'height.px': searchbarHeight - 12 }" src="../../../../../../assets/Images/icon-search.svg">
       <input class="search-input" type="text" placeholder="Search for anything" (ngModelChange)="getInput($event)" [formControl]="myControl" [matAutocomplete]="search">
-      <mat-autocomplete #search="matAutocomplete" class="search-auto-complete" (opened)="autoCompleteOpen($event)" (closed)="autoCompleteClosed($event)">
-        <mat-option class="search-option" *ngFor="let option of options" [value]="option.term" [ngStyle]="{'height.px' : searchbarHeight}" [innerHtml]="option?.term">
+      <mat-autocomplete #search="matAutocomplete" class="search-auto-complete" (opened)="autoCompleteOpen($event)" (closed)="autoCompleteClosed($event)" (optionSelected)="setSelectedOption($event)">
+        <mat-option class="search-option" *ngFor="let option of options" [value]="option" [ngStyle]="{'height.px' : searchbarHeight}" [innerHtml]="option">
+          <!-- {{ option?.term }} -->
         </mat-option>
       </mat-autocomplete>
     </form>
