@@ -1,5 +1,6 @@
 export class SearchResponseModel {
     fixedWord: string;
+    total: number;
     productsDetails: ProductDetailsModel[] = [];
 }
 

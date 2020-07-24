@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { map, startWith, timestamp } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { ApiCallService } from '../../../../services/api-call.service';
-import { PredictiveTermModel } from '../../../../models/predictive-term.model';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-search-bar',
@@ -18,12 +17,20 @@ export class SearchBarComponent implements OnInit {
   @Input() searchbarWidth: number;
   @Input() searchbarHeight: number;
   @Output() searchString = new EventEmitter<any>();
+  @Output() callForSearch = new EventEmitter<any>();
 
   constructor(
-    private apiCallService: ApiCallService
+    private apiCallService: ApiCallService,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.route.queryParams.subscribe(res => {
+      if (res.q) {
+        this.myControl.setValue(res.q);
+      }
+    });
     this.myControl.valueChanges
       .pipe(
         startWith(''),
@@ -50,29 +57,25 @@ export class SearchBarComponent implements OnInit {
   setSelectedOption(event) {
     const parsedValue = event.option.value.replace(/<[^>]*>/g, '');
     this.myControl.setValue(parsedValue);
-    this.search();
-  }
-
-  @HostListener('window.keydown', ['$event'])
-  enterDown(event: KeyboardEvent) {
-    // tslint:disable-next-line: deprecation
-    if (event.keyCode === 13) {
-      this.search();
-    }
-  }
-
-  @HostListener('window.keyup', ['$event'])
-  enterUp(event: KeyboardEvent) {
-    // tslint:disable-next-line: deprecation
-    if (event.keyCode === 13) {
-      this.search();
-    }
-  }
-
-  search() {
-    this.apiCallService.search(this.myControl.value).then(response => {
-      console.log(response);
+    this.callForSearch.emit(this.myControl.value);
+    this.router.navigate(['search'], {
+      queryParams: {
+        q: this.myControl.value
+      }
     });
+  }
+
+
+  onKey(event) {
+    if (event.keyCode === 13) {
+      this.searchString.emit(this.myControl.value);
+      this.callForSearch.emit(this.myControl.value);
+      this.router.navigate(['search'], {
+        queryParams: {
+          q: this.myControl.value
+        }
+      });
+    }
   }
 
   getInput(input: string) {

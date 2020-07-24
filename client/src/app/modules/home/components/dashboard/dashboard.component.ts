@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiCallService } from 'src/app/shared/services/api-call.service';
 import { PredictiveTermModel } from 'src/app/shared/models/predictive-term.model';
 import { SearchResponseModel } from 'src/app/shared/models/product-details.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,7 +14,7 @@ export class DashboardComponent implements OnInit {
   searchString: string;
   searchResponse: SearchResponseModel = new SearchResponseModel();
   constructor(
-    private apiCallService: ApiCallService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -24,9 +25,10 @@ export class DashboardComponent implements OnInit {
   }
 
   getSearchResult() {
-    this.apiCallService.search(this.searchString).then(response => {
-      this.searchResponse = response;
-      console.log(response);
+    this.router.navigate(['search'], {
+      queryParams: {
+        q: this.searchString
+      }
     });
   }
 

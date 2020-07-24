@@ -9,6 +9,13 @@
         }
         .mat-card-title {
             color: $black;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            font-size: 14px;
         }
         .mat-card-subtitle {
             .subs {
@@ -25,6 +32,9 @@
     .mat-card-image {
         width: 100%;
         margin: 6px 0;
+        .product-image {
+            object-fit: contain;
+        }
     }
     .mat-card-actions {
         padding: 0;
@@ -45,4 +55,3 @@
         }
     }
 }
-
