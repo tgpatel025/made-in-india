@@ -1,7 +1,7 @@
 import flask
 from flask import request, jsonify, make_response
 from flask_cors import CORS
-# import main_scrapper as scrapper
+import main_scrapper as scrapper
 import search_helper as search
 
 app = flask.Flask(__name__)
@@ -13,8 +13,7 @@ def api_search():
     if 'q' in request.args:
         highlighted = None
         try:
-            # scrapper.search_query = str(request.args['q'])
-            # scrapper.get_product_link(scrapper.url)
+            scrapper.scrape(str(request.args['q']))
             phrase = search.get_phrase_fixer(str(request.args['q']))
             if len(phrase["suggest"]["phrase-fixer"][0]["options"]) > 0:
                 text = phrase["suggest"]["phrase-fixer"][0]["options"][0]["text"]

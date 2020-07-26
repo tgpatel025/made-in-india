@@ -32,9 +32,8 @@
     .mat-card-image {
         width: 100%;
         margin: 6px 0;
-        .product-image {
-            object-fit: contain;
-        }
+        height: 150px;
+        object-fit: contain;
     }
     .mat-card-actions {
         padding: 0;

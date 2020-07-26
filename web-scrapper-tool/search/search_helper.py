@@ -196,13 +196,11 @@ def search(term):
     query = {
         "size": 100,
         "query": {
-            "multi_match": {
-                "query": str(term),
-                "fields": [
-                    "Product_Name",
-                    "Product_Generic_Name"
-                ],
-                "fuzziness": "auto"
+            "term": {
+                "Product_Name": {
+                    "value": str(term),
+                    "boost": 1.0
+                }
             }
         }
     }
@@ -215,6 +213,6 @@ def search(term):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.ERROR)
 
-# create_products_index()
-# create_keywords_suggester_index()
-# create_phrase_fixer_index()
+create_products_index()
+create_keywords_suggester_index()
+create_phrase_fixer_index()

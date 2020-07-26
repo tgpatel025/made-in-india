@@ -4,18 +4,44 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
-import search_helper as search
 import re
+import mysql.connector
+import search_helper as search
+
+# Chrome options
 chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
 chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
 prefs = {"profile.default_content_setting_values.notifications": 2}
 chrome_options.add_experimental_option("prefs", prefs)
-
 # driver Instance
-driver = webdriver.Chrome(executable_path="../extra/chromedriver.exe",
-                          options=chrome_options)
+driver = webdriver.Chrome(executable_path="../extra/chromedriver.exe", options=chrome_options)
+databaseConnection = None
+product_link = None
+
+
+def sql_insertion(p_dataid, p_name, p_price, p_highlights, p_rating, p_generic_name, p_img_url, p_link):
+    if databaseConnection:
+        try:
+            cursor = databaseConnection.cursor()
+            cursor.execute(
+                "SELECT EXISTS(SELECT * FROM product.product_info WHERE Product_ID = '%s' AND Product_Name = '%s')" %
+                (p_dataid, p_name))
+            results = cursor.fetchone()
+            if results[0] == 0:
+                p_highlights2str = '&'.join(map(str, p_highlights))
+                insert_stmt = (
+                    "INSERT INTO product.product_info(Product_ID,Product_Name,Product_Price,Product_Highlights,"
+                    "Product_Rating,Product_Generic_Name,Product_Img_Url,Product_Link) "
+                    "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
+                insert_data = (p_dataid, p_name, p_price, p_highlights2str, p_rating, p_generic_name, p_img_url, p_link)
+                cursor.execute(insert_stmt, insert_data)
+                databaseConnection.commit()
+                print("data inserted")
+            else:
+                pass
+        except Exception as e:
+            databaseConnection.rollback()
+            return e
 
 
 def data_id_processing(link):
@@ -27,7 +53,7 @@ def data_id_processing(link):
 
 
 def spec_scrapping(link, data_id, generic_name):
-    global database
+    global highlights_ul
     driver.get(link)
     driver.implicitly_wait(5)
     price = driver.find_element_by_xpath('//div[@class="_1vC4OE _3qQ9m1"]')
@@ -35,22 +61,21 @@ def spec_scrapping(link, data_id, generic_name):
     exp = r"[^0-9]"
     price1 = re.sub(exp, "", price1)
     price1 = int(price1)
-
     name = driver.find_element_by_xpath('//span[@class="_35KyD6"]')
     name1 = name.get_attribute("outerText")
-
     try:
         rating = driver.find_element_by_xpath('//div[@class="hGSR34"]')
         rating1 = rating.get_attribute("outerText")
     except NoSuchElementException:
-        try:
-            rating = driver.find_element_by_xpath('//div[@class="hGSR34 bqXGTW"]')
-            rating1 = rating.get_attribute("outerText")
-        except Exception:
-            rating1 = "N/A"
+        rating = driver.find_element_by_xpath('//div[@class="hGSR34 bqXGTW"]')
+        rating1 = rating.get_attribute("outerText")
+        if rating is not None:
+            rating1 = float(rating1)
+        else:
+            rating1 = float(0)
     try:
         highlights_ul = driver.find_elements_by_xpath('//div[@class="_3WHvuP"]//ul//li')
-        highlights_ul1 = [{"highlight": item.get_attribute("outerText")} for item in highlights_ul]
+        highlights_ul1 = [item.get_attribute("outerText") for item in highlights_ul]
     except NoSuchElementException:
         highlights_ul1 = []
 
@@ -59,128 +84,115 @@ def spec_scrapping(link, data_id, generic_name):
     except NoSuchElementException:
         img_url = driver.find_element_by_xpath('//div[@class="_3ZJShS _31bMyl"]//img').get_attribute("src")
 
-    search.store_record({'Product_ID': data_id, 'Product_Name': name1, 'Product_Price': price1,
-                         "Product_Generic_Name": generic_name, 'Product_Highlights': highlights_ul1,
-                         'Product_Rating': rating1, 'Product_Img_Url': img_url, 'Product_Link': link})
-    search.store_terms(name1)
-    search.store_terms(generic_name)
-    search.store_phrase(name1)
-    search.store_phrase(generic_name)
-    return
+    if data_id and name1 and price1 and generic_name:
+        sql_insertion(data_id, name1, price1, highlights_ul1, rating1, generic_name, img_url, link)
+        highlights = [{"highlight": item.get_attribute("outerText")} for item in highlights_ul]
+        search.store_record({'Product_ID': data_id, 'Product_Name': name1, 'Product_Price': price1,
+                             "Product_Generic_Name": generic_name, 'Product_Highlights': highlights,
+                             'Product_Rating': rating1, 'Product_Img_Url': img_url, 'Product_Link': link})
+        search.store_terms(name1)
+        search.store_terms(generic_name)
+        search.store_phrase(name1)
+        search.store_phrase(generic_name)
 
 
 def checking_origin(link):
-    flag = False
     value = data_id_processing(link)
     driver.get(link)
     try:
-        WebDriverWait(driver, 10).until(ec.visibility_of_element_located((By.XPATH, '//button[text()="Read More"]')))
-        read_more_btn = driver.find_element_by_xpath('//button[text()="Read More"]').click()
+        WebDriverWait(driver, 0).until(ec.visibility_of_element_located((By.XPATH, '//button[text()="Read More"]')))
+        driver.find_element_by_xpath('//button[text()="Read More"]').click()
         try:
             manufacturing_info_btn = driver.find_element_by_class_name("_39XK9P")
             manufacturing_info_btn.click()
             origin_country_text = driver.find_elements_by_xpath('.//span[contains(@class,"_3hjvBW")]')
             product_origin = [i.get_attribute("outerText") for i in origin_country_text]
-            if "india" in product_origin[1].lower():
-                print("Indian Product 1")
-                flag = True
-                spec_scrapping(link, value, product_origin[0])
-            else:
-                print("Non Indian Product 1")
+            for origin in product_origin:
+                if "india" in origin.lower() and len(origin) == 5:
+                    spec_scrapping(link, value, product_origin[0])
         except NoSuchElementException:
             origins = driver.find_elements_by_xpath('//div[@class="_2RngUh"]//ul//li//ul//li')
-            origin = [i.get_attribute("outerText") for i in origins]
-            if len(origin) == 1:
-                print("Non Indian Product 2")
-            elif origin[1].lower() == "india":
-                print("Indian Product 2")
-                flag = True
-                spec_scrapping(link, value, origin[0])
-            else:
-                print("Non Indian Product 2")
-    except TimeoutException:
-        product_more_info = driver.find_element_by_xpath('//div[@class="col col-11-12 ft8ug2"]').click()
-        try:
-            read_more_btn = driver.find_element_by_xpath('//button[text()="Read More"]').click()
-            try:
-                manufacturing_info_btn = driver.find_element_by_class_name("_22-mFc").click()
-                origin_country_text = driver.find_elements_by_xpath('.//span[contains(@class,"_3hjvBW")]')
-                product_origin = [i.get_attribute("outerText") for i in origin_country_text]
-                if "india" in product_origin[1].lower():
-                    print("Indian Product 3")
-                    flag = True
-                    spec_scrapping(link, value, product_origin[0])
-                else:
-                    print("Non Indian Product 3")
-            except NoSuchElementException:
-                origins = driver.find_elements_by_xpath('//div[@class="col col-9-12 _1BMpvA"]')
+            if len(origins) > 0:
                 origin = [i.get_attribute("outerText") for i in origins]
-                if origin[17].lower() == "india":
-                    print("Indian Product 4")
-                    flag = True
-                    spec_scrapping(link, value, origin[16])
-                else:
-                    print("Non Indian Product 4")
-            except Exception:
-                print("Error Occured 2")
-        except NoSuchElementException:
-            manufacturing_info_btn = driver.find_element_by_class_name("_22-mFc").click()
-            origin_country_text = driver.find_elements_by_xpath('.//span[contains(@class,"_3hjvBW")]')
-            product_origin = [i.get_attribute("outerText") for i in origin_country_text]
-            if "india" in product_origin[1].lower():
-                print("Indian Product 5")
-                flag = True
-                spec_scrapping(link, value, product_origin[0])
-            else:
-                print("Non Indian Product 5")
-
-    return
+                for o in origin:
+                    if "india" in o and len(o) == 5:
+                        spec_scrapping(link, value, origin[0])
+    except TimeoutException:
+        try:
+            driver.find_element_by_xpath('//div[@class="col col-11-12 ft8ug2"]').click()
+            try:
+                driver.find_element_by_xpath('//button[text()="Read More"]').click()
+                try:
+                    driver.find_element_by_class_name("_22-mFc").click()
+                    origin_country_text = driver.find_elements_by_xpath('.//span[contains(@class,"_3hjvBW")]')
+                    if len(origin_country_text) > 0:
+                        product_origin = [i.get_attribute("outerText") for i in origin_country_text]
+                        if len(product_origin) > 0:
+                            for o in product_origin:
+                                if "india" in o.lower() and len(o) == 5:
+                                    spec_scrapping(link, value, product_origin[0])
+                except NoSuchElementException:
+                    origins = driver.find_elements_by_xpath('//div[@class="col col-9-12 _1BMpvA"]')
+                    if len(origins) > 0:
+                        origin = [i.get_attribute("outerText") for i in origins]
+                        if len(origin) > 0:
+                            if origin[len(origin) - 1].lower() == "india" and len(origin[len(origin) - 1].lower()) == 5:
+                                spec_scrapping(link, value, origin[len(origin) - 2])
+            except NoSuchElementException:
+                try:
+                    driver.find_element_by_class_name("_22-mFc").click()
+                    origin_country_text = driver.find_elements_by_xpath('.//span[contains(@class,"_3hjvBW")]')
+                    if len(origin_country_text):
+                        product_origin = [i.get_attribute("outerText") for i in origin_country_text]
+                        if len(product_origin) > 0:
+                            for o in product_origin:
+                                if "india" in o.lower() and len(o) == 5:
+                                    spec_scrapping(link, value, product_origin[0])
+                except NoSuchElementException:
+                    return NoSuchElementException
+        except Exception as e:
+            return e
 
 
 def get_product_link(main_product_url):
+    global product_link
     try:
         driver.get(main_product_url)
+        elements = driver.find_elements_by_xpath('//a[contains(@class,"_31qSD5")]')
+        if elements:
+            product_link = [i.get_attribute("href") for i in elements]
+            for x in range(len(product_link)):
+                print(x)
+                checking_origin(product_link[x])
+        else:
+            elements = driver.find_elements_by_xpath('//a[contains(@class,"Zhf2z-")]')
+            if elements:
+                product_link = [i.get_attribute("href") for i in elements]
+                for x in range(len(product_link)):
+                    print(x)
+                    checking_origin(product_link[x])
+            else:
+                products_links = driver.find_elements_by_xpath('//a[contains(@class,"_3dqZjq")]')
+                product_link = [i.get_attribute("href") for i in products_links]
+                for x in range(len(product_link)):
+                    print(x)
+                    checking_origin(product_link[x])
         try:
-            WebDriverWait(driver, 10).until(
-                ec.visibility_of_element_located((By.XPATH, '//a[contains(@class,"_31qSD5")]')))
-            productlink = driver.find_elements_by_xpath('//a[contains(@class,"_31qSD5")]')
-            product_link = [i.get_attribute("href") for i in productlink]
-            for x in range(len(product_link)):
-                print(x)
-                checking_origin(product_link[x])
-            driver.get(main_product_url)
-            try:
-                next_page_link = driver.find_element_by_xpath(
-                    '//link[contains(@id,"next-page-link-tag")]').get_attribute("href")
-                get_product_link(next_page_link)
-            except Exception as e:
-                print("Last Page 24")
-                return
-
-        except TimeoutException:
-            WebDriverWait(driver, 10).until(
-                ec.visibility_of_element_located((By.XPATH, '//a[contains(@class,"Zhf2z-")]')))
-            productlink = driver.find_elements_by_xpath('//a[contains(@class,"Zhf2z-")]')
-            product_link = [i.get_attribute("href") for i in productlink]
-            for x in range(len(product_link)):
-                print(x)
-                checking_origin(product_link[x])
-            driver.get(main_product_url)
-            try:
-                next_page_link = driver.find_element_by_xpath(
-                    '//link[contains(@id,"next-page-link-tag")]').get_attribute("href")
-                get_product_link(next_page_link)
-            except Exception as e:
-                print("Last Page 40")
-                return
+            next_page_link = driver.find_element_by_xpath('//link[contains(@id,"next-page-link-tag")]'). \
+                get_attribute("href")
+            get_product_link(next_page_link)
+        except Exception as e:
+            print("Last Page")
+            return e
     except Exception as e:
-        print("Last Page Error\n", e)
-    return
+        print("Last Page Error\n")
+        return e
 
 
-# Main Code
-
-search_query = 'tv'
-url = "https://www.flipkart.com/search?q=" + search_query
-
-# get_product_link(url)
+def scrape(product):
+    url = "https://www.flipkart.com/search?q=" + product
+    global databaseConnection
+    databaseConnection = mysql.connector.connect(host="localhost", user="root", password="Hellobrother@9327",
+                                                 database="product")
+    get_product_link(url)
+    databaseConnection.close()
