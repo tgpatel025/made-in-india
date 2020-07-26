@@ -1,22 +1,17 @@
+import re
+import logging
+import mysql.connector
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
+import search_helper as search
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
-import re
-import mysql.connector
-import search_helper as search
+from selenium.webdriver.support import expected_conditions as ec
 
-# Chrome options
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
-prefs = {"profile.default_content_setting_values.notifications": 2}
-chrome_options.add_experimental_option("prefs", prefs)
-# driver Instance
-driver = webdriver.Chrome(executable_path="../extra/chromedriver.exe", options=chrome_options)
-databaseConnection = None
-product_link = None
+driver: None
+product_link: None
+databaseConnection: None
 
 
 def sql_insertion(p_dataid, p_name, p_price, p_highlights, p_rating, p_generic_name, p_img_url, p_link):
@@ -36,10 +31,11 @@ def sql_insertion(p_dataid, p_name, p_price, p_highlights, p_rating, p_generic_n
                 insert_data = (p_dataid, p_name, p_price, p_highlights2str, p_rating, p_generic_name, p_img_url, p_link)
                 cursor.execute(insert_stmt, insert_data)
                 databaseConnection.commit()
-                print("data inserted")
+                logging.info("%s Data inserted", p_dataid)
             else:
                 pass
         except Exception as e:
+            logging.exception("Exception")
             databaseConnection.rollback()
             return e
 
@@ -67,6 +63,7 @@ def spec_scrapping(link, data_id, generic_name):
         rating = driver.find_element_by_xpath('//div[@class="hGSR34"]')
         rating1 = rating.get_attribute("outerText")
     except NoSuchElementException:
+        logging.exception("Exception")
         rating = driver.find_element_by_xpath('//div[@class="hGSR34 bqXGTW"]')
         rating1 = rating.get_attribute("outerText")
         if rating is not None:
@@ -77,11 +74,13 @@ def spec_scrapping(link, data_id, generic_name):
         highlights_ul = driver.find_elements_by_xpath('//div[@class="_3WHvuP"]//ul//li')
         highlights_ul1 = [item.get_attribute("outerText") for item in highlights_ul]
     except NoSuchElementException:
+        logging.exception("Exception")
         highlights_ul1 = []
 
     try:
         img_url = driver.find_element_by_xpath('//div[@class="_3BTv9X _3iN4zu"]//img').get_attribute("src")
     except NoSuchElementException:
+        logging.exception("Exception")
         img_url = driver.find_element_by_xpath('//div[@class="_3ZJShS _31bMyl"]//img').get_attribute("src")
 
     if data_id and name1 and price1 and generic_name:
@@ -111,6 +110,7 @@ def checking_origin(link):
                 if "india" in origin.lower() and len(origin) == 5:
                     spec_scrapping(link, value, product_origin[0])
         except NoSuchElementException:
+            logging.exception("Exception")
             origins = driver.find_elements_by_xpath('//div[@class="_2RngUh"]//ul//li//ul//li')
             if len(origins) > 0:
                 origin = [i.get_attribute("outerText") for i in origins]
@@ -118,6 +118,7 @@ def checking_origin(link):
                     if "india" in o and len(o) == 5:
                         spec_scrapping(link, value, origin[0])
     except TimeoutException:
+        logging.exception("Exception")
         try:
             driver.find_element_by_xpath('//div[@class="col col-11-12 ft8ug2"]').click()
             try:
@@ -132,6 +133,7 @@ def checking_origin(link):
                                 if "india" in o.lower() and len(o) == 5:
                                     spec_scrapping(link, value, product_origin[0])
                 except NoSuchElementException:
+                    logging.exception("Exception")
                     origins = driver.find_elements_by_xpath('//div[@class="col col-9-12 _1BMpvA"]')
                     if len(origins) > 0:
                         origin = [i.get_attribute("outerText") for i in origins]
@@ -139,6 +141,7 @@ def checking_origin(link):
                             if origin[len(origin) - 1].lower() == "india" and len(origin[len(origin) - 1].lower()) == 5:
                                 spec_scrapping(link, value, origin[len(origin) - 2])
             except NoSuchElementException:
+                logging.exception("Exception")
                 try:
                     driver.find_element_by_class_name("_22-mFc").click()
                     origin_country_text = driver.find_elements_by_xpath('.//span[contains(@class,"_3hjvBW")]')
@@ -149,8 +152,9 @@ def checking_origin(link):
                                 if "india" in o.lower() and len(o) == 5:
                                     spec_scrapping(link, value, product_origin[0])
                 except NoSuchElementException:
-                    return NoSuchElementException
+                    logging.exception("Exception")
         except Exception as e:
+            logging.exception("Exception")
             return e
 
 
@@ -182,17 +186,32 @@ def get_product_link(main_product_url):
                 get_attribute("href")
             get_product_link(next_page_link)
         except Exception as e:
+            logging.exception("Last Page Exception")
             print("Last Page")
             return e
     except Exception as e:
-        print("Last Page Error\n")
+        logging.exception("Last Page Error Exception")
+        print("Last Page Error")
         return e
 
 
 def scrape(product):
     url = "https://www.flipkart.com/search?q=" + product
-    global databaseConnection
-    databaseConnection = mysql.connector.connect(host="localhost", user="root", password="Hellobrother@9327",
-                                                 database="product")
+    global databaseConnection, driver
+    databaseConnection = mysql.connector.connect(
+        host="localhost", user="root", password="Hellobrother@9327", database="product")
+    # Chrome options
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+    prefs = {"profile.default_content_setting_values.notifications": 2}
+    chrome_options.add_experimental_option("prefs", prefs)
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(executable_path="../extra/chromedriver.exe", options=chrome_options)
     get_product_link(url)
     databaseConnection.close()
+
+
+if __name__ == '__main__':
+    logging.basicConfig(filename='logs', filemode='w', format='%(name)s : %(levelname)s : %(asctime)s: %(message)s',
+                        datefmt='%d-%b-%y %H:%M:%S')

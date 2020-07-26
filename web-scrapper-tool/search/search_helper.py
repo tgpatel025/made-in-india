@@ -1,6 +1,6 @@
+import json
 import hashlib
 import logging
-import json
 from elasticsearch import Elasticsearch
 
 file = open('../extra/elastic-search-models.json')
@@ -12,8 +12,9 @@ def connect_elasticsearch():
     try:
         if es.ping():
             return es
-    except Exception as es:
-        return es
+    except Exception as ex:
+        logging.exception("Exception")
+        return ex
 
 
 es_object = connect_elasticsearch()
@@ -34,9 +35,10 @@ def create_products_index():
     try:
         if not es_object.indices.exists(index_name):
             es_object.indices.create(index=index_name, body=settings)
-            print('Created Product Index')
+            logging.info('Created Product Index')
     except Exception as ex:
-        print(str(ex))
+        logging.exception("Elasticsearch is not started Exception")
+        return str(ex)
 
 
 def create_keywords_suggester_index():
@@ -64,9 +66,10 @@ def create_keywords_suggester_index():
     try:
         if not es_object.indices.exists(index_name):
             es_object.indices.create(index=index_name, body=settings)
-            print('Created Term Suggester Index')
+            logging.info('Created Term Suggester Index')
     except Exception as ex:
-        print(str(ex))
+        logging.exception("Elasticsearch is not started Exception")
+        return str(ex)
 
 
 def create_phrase_fixer_index():
@@ -92,15 +95,18 @@ def create_phrase_fixer_index():
     try:
         if not es_object.indices.exists(index_name):
             es_object.indices.create(index=index_name, body=settings)
-            print('Created Phrase Fixer Index')
+            logging.info('Created Phrase Fixer Index')
     except Exception as ex:
-        print(str(ex))
+        logging.exception("Elasticsearch is not started Exception")
+        return str(ex)
 
 
 def store_record(record):
     try:
-        return es_object.index(index='products', body=record, id=record['Product_ID'])
+        es_object.index(index='products', body=record, id=record['Product_ID'])
+        logging.info('product stored successfully')
     except Exception as ex:
+        logging.exception("Exception")
         return str(ex)
 
 
@@ -110,8 +116,10 @@ def store_phrase(text):
             "text": text
         }
         hash_id = hashlib.sha1(text.encode())
-        return es_object.index(index='phrase-fixer', body=phrase_fixer, id=hash_id.hexdigest())
+        es_object.index(index='phrase-fixer', body=phrase_fixer, id=hash_id.hexdigest())
+        logging.info('phrase stored successfully')
     except Exception as ex:
+        logging.exception("Exception")
         return str(ex)
 
 
@@ -122,8 +130,10 @@ def store_terms(text):
             "textKeyword": text
         }
         hash_id = hashlib.sha1(text.encode())
-        return es_object.index(index='keywords-suggester', body=keyword_suggester, id=hash_id.hexdigest())
+        es_object.index(index='keywords-suggester', body=keyword_suggester, id=hash_id.hexdigest())
+        logging.info('term stored successfully')
     except Exception as ex:
+        logging.exception("Exception")
         return str(ex)
 
 
@@ -157,6 +167,7 @@ def get_predictive_words(term):
     try:
         return es_object.search(index='keywords-suggester', body=json.dumps(query))
     except Exception as ex:
+        logging.exception("Exception")
         return str(ex)
 
 
@@ -189,6 +200,7 @@ def get_phrase_fixer(text):
     try:
         return es_object.search(index='phrase-fixer', body=query)
     except Exception as ex:
+        logging.exception("Exception")
         return str(ex)
 
 
@@ -209,11 +221,13 @@ def search(term):
     try:
         return es_object.search(index='products', body=json.dumps(query))
     except Exception as ex:
+        logging.exception("Exception")
         return str(ex)
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.ERROR)
+    logging.basicConfig(filename='logs', filemode='w', format='%(name)s : %(levelname)s : %(asctime)s: %(message)s',
+                        datefmt='%d-%b-%y %H:%M:%S')
 
 create_products_index()
 create_keywords_suggester_index()
