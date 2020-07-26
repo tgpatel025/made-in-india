@@ -231,6 +231,6 @@ if __name__ == '__main__':
     logging.basicConfig(filename=filename + '.log', filemode='w',
                         format='%(name)s : %(levelname)s : %(asctime)s: %(message)s', datefmt='%H:%M:%S')
 
-# create_products_index()
-# create_keywords_suggester_index()
-# create_phrase_fixer_index()
+create_products_index()
+create_keywords_suggester_index()
+create_phrase_fixer_index()
