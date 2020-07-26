@@ -1,4 +1,5 @@
 import re
+import time
 import logging
 import mysql.connector
 from selenium import webdriver
@@ -213,5 +214,7 @@ def scrape(product):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='logs', filemode='w', format='%(name)s : %(levelname)s : %(asctime)s: %(message)s',
-                        datefmt='%d-%b-%y %H:%M:%S')
+    filename = time.strftime("%d-%m-%Y")
+    logging.basicConfig(filename=filename+'.log', filemode='w',
+                        format='%(name)s : %(levelname)s : %(asctime)s: %(message)s', datefmt='%H:%M:%S')
+

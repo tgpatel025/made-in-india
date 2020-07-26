@@ -1,4 +1,5 @@
 import flask
+import time
 import logging
 from flask_cors import CORS
 import search_helper as search
@@ -53,5 +54,6 @@ def api_predictive_term():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='logs', filemode='w', format='%(name)s : %(levelname)s : %(asctime)s: %(message)s',
-                        datefmt='%d-%b-%y %H:%M:%S')
+    filename = time.strftime("%d-%m-%Y")
+    logging.basicConfig(filename=filename + '.log', filemode='w',
+                        format='%(name)s : %(levelname)s : %(asctime)s: %(message)s', datefmt='%H:%M:%S')
