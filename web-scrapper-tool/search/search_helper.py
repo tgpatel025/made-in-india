@@ -196,11 +196,13 @@ def search(term):
     query = {
         "size": 100,
         "query": {
-            "term": {
-                "Product_Name": {
-                    "value": str(term),
-                    "boost": 1.0
-                }
+            "multi_match": {
+                "query": str(term),
+                "fields": [
+                    "Product_Name",
+                    "Product_Generic_Name"
+                ],
+                "fuzziness": "auto"
             }
         }
     }
