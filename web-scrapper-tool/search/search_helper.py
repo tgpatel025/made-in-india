@@ -9,7 +9,7 @@ elasticsearch_data = json.load(file)
 
 
 def connect_elasticsearch():
-    es = Elasticsearch([{'host': 'made-in-india.search', 'port': 80}])
+    es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
     try:
         if es.ping():
             return es
