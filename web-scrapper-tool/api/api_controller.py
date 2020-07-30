@@ -54,6 +54,7 @@ def api_predictive_term():
 
 
 if __name__ == '__main__':
+    app.run()
     filename = time.strftime("%d-%m-%Y")
     logging.basicConfig(filename=filename + '.log', filemode='w',
                         format='%(name)s : %(levelname)s : %(asctime)s: %(message)s', datefmt='%H:%M:%S')
