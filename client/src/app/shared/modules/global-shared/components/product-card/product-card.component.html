@@ -1,0 +1,32 @@
+<mat-card class="product-card">
+    <mat-card-header>
+        <div mat-card-avatar class="product-site-logo"></div>
+        <mat-card-title>{{ productDetails?.Product_Name }}</mat-card-title>
+        <mat-card-subtitle>
+            <div class="subs">
+                <span class="origin-country">Made in India</span>
+                <img class="verified-icon" src="../../../../../../assets/Images/correct.svg">
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="productDetails?.Product_Img_Url">
+    <mat-card-actions>
+        <div class="price-wrapper">
+            <mat-chip-list class="mat-chip-list-stacked">
+                <mat-chip>
+                    <span class="rs">₹</span>
+                    {{ productDetails?.Product_Price }}
+                </mat-chip>
+              </mat-chip-list>
+        </div>
+        <div class="link-button-wrapper">
+            <button class="link-button" mat-button (click)="openDetails()">
+                Details
+            </button>
+            <button class="link-button flipkart-link" mat-button (click)="goToFlipkart()">
+                Go to Flipkart
+                <img src="../../../../../../assets/Images/link.svg">
+            </button>
+        </div>
+    </mat-card-actions>
+</mat-card>

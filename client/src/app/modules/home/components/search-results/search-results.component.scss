@@ -1,0 +1,36 @@
+@import "../../../../../assets/scss/variable_color.scss";
+
+.search-result-page {
+    .search-bar-wrapper {
+        padding: 24px 0 0 0;
+        .search-bar {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+        }
+        .total-result {
+            padding: 12px 100px 0 100px;
+            color: $black;
+        }
+    }
+    .search-result-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+        height: 100%;
+        flex-wrap: wrap;
+        .spinner-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .products {
+            margin: 12px;
+        }
+    }
+}

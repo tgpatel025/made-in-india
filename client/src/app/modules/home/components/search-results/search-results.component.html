@@ -1,0 +1,19 @@
+<div class="search-result-page">
+    <div class="search-bar-wrapper">
+        <div class="search-bar">
+            <app-search-bar [searchbarWidth]="searchBarWidth" [searchbarHeight]="48" (callForSearch)="search($event)"></app-search-bar>
+        </div>
+        <div class="total-result" *ngIf="searchResult && searchResult?.total > 0">
+            Search for: <span [innerHTML]="searchResult?.fixedWord"></span><br>
+            Found <strong>{{ searchResult?.total }}</strong> results
+        </div>
+    </div>
+    <div class="search-result-wrapper">
+        <div class="spinner-overlay" *ngIf="displaySpinner">
+            <mat-spinner></mat-spinner>
+        </div>
+        <div class="products" *ngFor="let product of searchResult?.productsDetails">
+            <app-product-card [productDetails]="product"></app-product-card>
+        </div>
+    </div>
+</div>

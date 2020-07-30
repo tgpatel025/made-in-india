@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+@import "assets/scss/variable_color.scss";
+
+.cdk-overlay-pane {
+    .search-auto-complete {
+        max-width: none;
+        left: -60px;
+        background-color: $ternary;
+        border-top: 1px solid $black;
+        box-shadow: 0px 3px 6px -3px $black;
+        overflow: hidden;
+        .mat-option {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+}
+
+.mat-chip-list-stacked {
+    .mat-chip-list-wrapper {
+        .mat-chip {
+            .rs {
+                margin-right: 3px;
+            }
+            justify-content: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            color: $black;
+            border: 1px solid $black;
+            background-color: $white;
+        }
+    }
+}

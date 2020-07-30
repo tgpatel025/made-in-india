@@ -1,0 +1,98 @@
+{
+  "shingle": {
+    "type": "shingle",
+    "min_shingle_size": 2,
+    "max_shingle_size": 3
+  },
+  "nGram_analyzer": {
+    "filter": [
+      "lowercase",
+      "asciifolding"
+    ],
+    "type": "custom",
+    "tokenizer": "nGram_filter"
+  },
+  "whitespace_analyzer": {
+    "filter": [
+      "lowercase",
+      "asciifolding"
+    ],
+    "type": "custom",
+    "tokenizer": "whitespace"
+  },
+  "trigram": {
+    "type": "custom",
+    "tokenizer": "standard",
+    "filter": [
+      "shingle", "lowercase"
+    ]
+  },
+  "nGram_filter": {
+    "token_chars": [
+      "letter",
+      "digit",
+      "punctuation",
+      "symbol"
+    ],
+    "min_gram": 1,
+    "type": "ngram",
+    "max_gram": 50
+  },
+  "products": {
+    "properties": {
+      "Product_ID": {
+        "type": "text"
+      },
+      "Product_Name": {
+        "type": "text"
+      },
+      "Product_Price": {
+        "type": "text"
+      },
+      "Product_Highlights": {
+        "properties": {
+          "highlight": {
+            "type": "text"
+          }
+        }
+      },
+      "Product_Rating": {
+        "type": "text"
+      },
+      "Product_Generic_Name": {
+        "type": "text"
+      },
+      "Product_Img_Url": {
+        "type": "text"
+      },
+      "Product_Link": {
+        "type": "text"
+      }
+    }
+  },
+  "keyword-suggester": {
+    "properties": {
+      "text": {
+        "type": "text",
+        "analyzer": "nGram_analyzer",
+        "search_analyzer": "whitespace_analyzer"
+      },
+      "textKeyword": {
+        "type": "keyword"
+      }
+    }
+  },
+  "phrase-fixer": {
+    "properties": {
+      "text": {
+        "type": "keyword",
+        "fields": {
+          "trigram": {
+            "type": "text",
+            "analyzer": "trigram"
+          }
+        }
+      }
+    }
+  }
+}

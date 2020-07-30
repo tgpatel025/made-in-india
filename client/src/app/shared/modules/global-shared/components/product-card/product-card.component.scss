@@ -1,0 +1,56 @@
+@import "../../../../../../assets/scss/variable_color.scss";
+
+.product-card {
+    max-width: 300px;
+    .mat-card-header {
+        .product-site-logo {
+            background-image: url("../../../../../../assets/Images/flipkart_icon.svg");
+            background-size: cover;
+        }
+        .mat-card-title {
+            color: $black;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            font-size: 14px;
+        }
+        .mat-card-subtitle {
+            .subs {
+                .origin {
+                    font-size: 16px;
+                }
+                .verified-icon {
+                    height: 24px;
+                    margin-left: 12px;
+                }
+            }
+        }
+    }
+    .mat-card-image {
+        width: 100%;
+        margin: 6px 0;
+        height: 150px;
+        object-fit: contain;
+    }
+    .mat-card-actions {
+        padding: 0;
+        .price-wrapper {
+            width: 100%;
+            padding: 8px;
+        }
+        .link-button-wrapper {
+            display: flex;
+            .link-button {
+                flex: auto;
+                outline: none;
+                background-color: $ternary;
+                &.flipkart-link {
+                    margin: 0 0 0 8px;
+                }
+            }
+        }
+    }
+}
