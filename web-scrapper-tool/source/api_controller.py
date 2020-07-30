@@ -7,6 +7,7 @@ import main_scrapper as scrapper
 from flask import request, jsonify, make_response
 
 app = flask.Flask(__name__)
+app.config['DEBUG'] = True
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
@@ -54,7 +55,7 @@ def api_predictive_term():
 
 
 if __name__ == '__main__':
-    app.run()
     filename = time.strftime("%d-%m-%Y")
     logging.basicConfig(filename=filename + '.log', filemode='w',
                         format='%(name)s : %(levelname)s : %(asctime)s: %(message)s', datefmt='%H:%M:%S')
+    app.run(host='localhost', port='5000')

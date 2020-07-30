@@ -119,7 +119,6 @@ def checking_origin(link):
                     if "india" in o and len(o) == 5:
                         spec_scrapping(link, value, origin[0])
     except TimeoutException:
-        logging.exception("Exception")
         try:
             driver.find_element_by_xpath('//div[@class="col col-11-12 ft8ug2"]').click()
             try:
@@ -142,7 +141,6 @@ def checking_origin(link):
                             if origin[len(origin) - 1].lower() == "india" and len(origin[len(origin) - 1].lower()) == 5:
                                 spec_scrapping(link, value, origin[len(origin) - 2])
             except NoSuchElementException:
-                logging.exception("Exception")
                 try:
                     driver.find_element_by_class_name("_22-mFc").click()
                     origin_country_text = driver.find_elements_by_xpath('.//span[contains(@class,"_3hjvBW")]')
@@ -211,10 +209,3 @@ def scrape(product):
     driver = webdriver.Chrome(executable_path="../extra/chromedriver.exe", options=chrome_options)
     get_product_link(url)
     databaseConnection.close()
-
-
-if __name__ == '__main__':
-    filename = time.strftime("%d-%m-%Y")
-    logging.basicConfig(filename=filename+'.log', filemode='w',
-                        format='%(name)s : %(levelname)s : %(asctime)s: %(message)s', datefmt='%H:%M:%S')
-

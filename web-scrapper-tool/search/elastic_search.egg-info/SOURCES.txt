@@ -1,5 +1,0 @@
-setup.py
-elastic_search.egg-info/PKG-INFO
-elastic_search.egg-info/SOURCES.txt
-elastic_search.egg-info/dependency_links.txt
-elastic_search.egg-info/top_level.txt
