@@ -7,7 +7,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiCallService {
-  serverAddress = 'http://made-in-india.api/api/';
+  serverAddress = 'http://127.0.0.1:5000/';
   private searchResult: Subject<any> = new Subject<any>();
   private diaplaySpinner: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   constructor(
