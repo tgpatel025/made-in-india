@@ -13,7 +13,7 @@ This full fledge project that scrapes data from Flipkart and displayes only Indi
   - TO-DO
   
 ### Overview
-As we all know that there is a current conflict between India and China, the majority of online stores keep an enormous quantity of Chinese products. As an Indian, we should avoid buying Chinese products. While everyone engaged in their daily hectic schedule no one has time to check the origin of the country for each product so here we offer a unique solution to that. Our website scrapes the real-time data from Flipkart and displays only the products that have been originated from India. 
+As we all know that there is a current conflict between India and China. The majority of online stores keep an enormous quantity of Chinese products. As an Indian, we should avoid buying Chinese products. While everyone engaged in their daily hectic schedule no one has time to check the origin of the country for each product so here we offer a unique solution to that. Our website scrapes the real-time data from Flipkart and displays only the products that have been originated from India. 
 
 ### Prerequisites 
 1. Angular(FrontEnd) 
