@@ -52,7 +52,7 @@ As we all know the situation between India and China we also know that majority 
       - Product_Img_Url
       - Product_Link   
    3. Go to made-in-india/web-scrapper-tool/source/main_scrapper.py
-      > On line no. 206 change the user name,password and database as per user   
+      > On line no. 206 change the user name, password and database as per user   
       
 ### Activating Virtual Environment
 - Go to ./web-scrapper-tool/webscrappingenv/Scripts and run
