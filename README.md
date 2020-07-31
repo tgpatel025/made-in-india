@@ -90,4 +90,4 @@ This is how the Products are displayed after we have searched a product:
 - [ ] Scrape More Online Stores.
 - [ ] Parallel Scrapping.
 
-**If you encounter any issue and any suggestion while using code, feel free to contact on yadavyogesh9999@gmail.com or tapan.vach025@gmail.com
+**If you encounter any issue and have any suggestion while using code, feel free to contact on yadavyogesh9999@gmail.com or tapan.vach025@gmail.com
