@@ -11,7 +11,7 @@ This full fledge project that scrapes data from Flipkart and displayes only Indi
   - TO-DO
   
 ### Overview
-As we all know the situation between India and China we also know that majority of online stores keep Chinese products.As our hectic daily schedule we don't have time to check the origin every product.So to overcome that problem here is a solution to it we provide the scraped data has an origin of India.
+As we all know the situation between India and China we also know that majority of online stores keep Chinese products.As our hectic daily schedule we don't have time to check the origin every product.So to overcome that problem here is a solution to it we provide the scraped data that has an origin of India.
 ### Prerequisites 
 1. Angular(FrontEnd) 
 2. Python(BackEnd)
@@ -39,6 +39,9 @@ As we all know the situation between India and China we also know that majority 
       '''
       npm i @angular/cli@latest
       '''
+   4. Install packages simply run
+      ''' npm i '''
+      command.
 5. MySql
    1. Download from [here](https://dev.mysql.com/downloads/installer/)
    2. Use "Developer Default" setting while installing setup.
@@ -71,7 +74,7 @@ As we all know the situation between India and China we also know that majority 
    - Type the following command to start node server
      > ng serve
 3. Start API Service
-
+   - Activate virtual environment and go to ./source/ and run ''' python api_controller.py ''' command.
 >VISIT "http://localhost:4200/"
 ## Screenshots
 <!--
@@ -80,14 +83,13 @@ As we all know the situation between India and China we also know that majority 
 -->
 This Basic Search Bar:
 ![Search](https://user-images.githubusercontent.com/51474690/88976094-15945400-d2d9-11ea-86e7-f5451617c24f.jpeg)
-This Is how the Products are displayed after we have searched a product:
+This is how the Products are displayed after we have searched a product:
 ![product](https://user-images.githubusercontent.com/51474690/88975790-7707f300-d2d8-11ea-8260-f5f99ba08ddf.jpeg)
 
 
 
 ## TO-DO
 - [ ] Scrape More Online Stores.
+- [ ] Parallel Scrapping.
 
-**If you encounter any issue while using code, feel free to contact me yadavyogesh9999@gmail.com or **
-
-### Follow instruction for setup.
+**If you encounter any issue and any suggestion while using code, feel free to contact on yadavyogesh9999@gmail.com or tapan.vach025@gmail.com
