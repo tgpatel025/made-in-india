@@ -11,6 +11,7 @@ This full fledge project that scrapes data from Flipkart and displayes only Indi
   - Starting Project
   - Screenshots
   - TO-DO
+  - Extra
   
 ### Overview
 As we all know that there is a current conflict between India and China. The majority of online stores keep an enormous quantity of Chinese products. As an Indian, we should avoid buying Chinese products. While everyone engaged in their daily hectic schedule no one has time to check the origin of the country for each product. So here we offer a unique solution to that. Our website scrapes the real-time data from Flipkart and displays only the products that have been originated from India. 
@@ -67,10 +68,6 @@ As we all know that there is a current conflict between India and China. The maj
 ### Installing python packages
 - Install the Requirements file ("./web-scrapper-tool/requirement.txt") by following command based on which pip you are using:
    > pip install -r requirements.txt or pip3 install -r requirements.txt
-- Go to dir "./web-scrapper-tool/"
-   > pip install -e . or pip3 install -e .
-- Go to "./web-scrapper-tool/source/"
-   > pip install -e . or pip3 install -e .
    
 ### Starting Project
 1. Start Elastic Search Server
@@ -97,5 +94,8 @@ This is how the Products are displayed after we have searched a product:
 ## TO-DO
 - [ ] Scrape More Online Stores.
 - [ ] Parallel Scrapping.
+
+## Extra
+- To view how we are scrapping from python, Go to "./web-scrapper-tool/source/main_scrapper.py" and comment line no. 207 and 208.
 
 **If you encounter any issue and have any suggestion while using code, feel free to contact on yadavyogesh9999@gmail.com or tapan.vach025@gmail.com**
