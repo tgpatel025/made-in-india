@@ -85,7 +85,7 @@ As we all know that there is a current conflict between India and China. The maj
      > python api_controller.py
 > VISIT http://localhost:4200/
 
-## Screenshots
+### Screenshots
 This Basic Search Bar:
 ![Search](https://user-images.githubusercontent.com/51474690/88976094-15945400-d2d9-11ea-86e7-f5451617c24f.jpeg)
 This is how the Products are displayed after we have searched a product:
