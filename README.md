@@ -11,7 +11,8 @@ This full fledge project that scrapes data from Flipkart and displayes only Indi
   - TO-DO
   
 ### Overview
-As we all know the situation between India and China we also know that majority of online stores keep Chinese products.As our hectic daily schedule we don't have time to check the origin every product.So to overcome that problem here is a solution to it we provide the scraped data that has an origin of India.
+As we all know the situation between India and China we also know that majority of online stores keep Chinese products.As our hectic daily schedule we don't have time to check the origin every product. So to overcome that problem here is a solution to it. We provide the scraped data from flipkart that has an origin of India.
+
 ### Prerequisites 
 1. Angular(FrontEnd) 
 2. Python(BackEnd)
@@ -20,24 +21,23 @@ As we all know the situation between India and China we also know that majority 
 5. MySQL
 
 ### Setting Up Your Machine
-1. [Python](https://www.python.org/downloads/) 
-
+1. Download python From [here](https://www.python.org/downloads/).
 2. Elastic Search 
-   1. Download elastic search from [here](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.8.0-windows-x86_64.zip) 
-   2. Download Java Version 8 and above from [here](https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)
+   1. Download elastic search from [here](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.8.0-windows-x86_64.zip).
+   2. Download Java Version 8 and above from [here](https://www.oracle.com/java/technologies/javase-jdk14-downloads.html).
    3. Configure JAVA_HOME
-      - This PC -> properties -> Advanced system settings -> Enviornment variable -> 
-                  new -> Name: JAVA_HOME -> path C/ProgramFiles/Java/jdk folder name
-      - add this in both user variable and system variable
+      - This PC -> properties -> Advanced system settings -> Enviornment variable -> System Variable -> New 
+                  Name: JAVA_HOME
+                  Path: C:/ProgramFiles/Java/jdk folder name
 
    4. Unzip elastic search file
-3. [Node JS](https://nodejs.org/en/)
+3. Download Node from [here](https://nodejs.org/en/).
 4. Angular 
    1. Download/Clone the repo. and unzip it.
    2. Open Clients Folder after that open cmd in that directory.
    3. Write the following command in cmd to install Angular 
       > npm i @angular/cli@latest
-   4. Install packages simply run
+   4. To install packages simply run
       > npm i
 5. MySql
    1. Download from [here](https://dev.mysql.com/downloads/installer/)
@@ -53,38 +53,36 @@ As we all know the situation between India and China we also know that majority 
       - Product_Link   
    3. Go to made-in-india/web-scrapper-tool/source/main_scrapper.py
       > On line no. 206 change the user name,password and database as per user   
-
-### Installing Requirements
-1. Activate the virtual Enviroment by running cmd in directory "../made-in-india/web-scrapper-tool/" by following command
-   > webscappingenv\Scripts\activate
-2. Install the Requirements file by following command based on which pip you are using:
+      
+### Activating Virtual Environment
+- Go to ./web-scrapper-tool/webscrappingenv/Scripts and run
+  > activate
+  
+### Installing requirements.txt
+- Install the Requirements file (./web-scrapper-tool/requirement.txt) by following command based on which pip you are using:
    > pip install -r requirements.txt or pip3 install -r requirements.txt
-
+   
 ### Starting Project
 1. Start Elastic Search Server
    - Go to the unzipped elastic search folder
-   - Double Click On elasticsearch.bat in following directory "..elasticsearch-7.8.0/bin/elasticsearch.bat"
-   - To check weather it has started visit - "http://localhost:9200/"  
+   - open elasticsearch.bat(../elasticsearch-7.8.0/bin/elasticsearch.bat)
+   - To check weather it has started visit
+    > http://localhost:9200/
 2. Start Node Server
    - Go to the folder that that conatins the download/cloned reop where you have installed angular.
-   - Open cmd in following directory "..made-in-india/client/"
+   - Open cmd in following directory - ./client/
    - Type the following command to start node server
      > ng serve
 3. Start API Service
    - Activate virtual environment and go to ./web-scrapper-tool/source/ and run
      > python api_controller.py
->VISIT "http://localhost:4200/"
+> VISIT http://localhost:4200/
+
 ## Screenshots
-<!--
-<img src="https://user-images.githubusercontent.com/51474690/88975790-7707f300-d2d8-11ea-8260-f5f99ba08ddf.jpeg" align="left" height="500" width="300" >
-<img src="https://user-images.githubusercontent.com/51474690/88976094-15945400-d2d9-11ea-86e7-f5451617c24f.jpeg" align="center" height="500" width="300" >
--->
 This Basic Search Bar:
 ![Search](https://user-images.githubusercontent.com/51474690/88976094-15945400-d2d9-11ea-86e7-f5451617c24f.jpeg)
 This is how the Products are displayed after we have searched a product:
 ![product](https://user-images.githubusercontent.com/51474690/88975790-7707f300-d2d8-11ea-8260-f5f99ba08ddf.jpeg)
-
-
 
 ## TO-DO
 - [ ] Scrape More Online Stores.
