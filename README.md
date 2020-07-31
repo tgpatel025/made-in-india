@@ -36,12 +36,9 @@ As we all know the situation between India and China we also know that majority 
    1. Download/Clone the repo. and unzip it.
    2. Open Clients Folder after that open cmd in that directory.
    3. Write the following command in cmd to install Angular 
-      '''
-      npm i @angular/cli@latest
-      '''
+      > npm i @angular/cli@latest
    4. Install packages simply run
-      ''' npm i '''
-      command.
+      > npm i
 5. MySql
    1. Download from [here](https://dev.mysql.com/downloads/installer/)
    2. Use "Developer Default" setting while installing setup.
@@ -74,7 +71,8 @@ As we all know the situation between India and China we also know that majority 
    - Type the following command to start node server
      > ng serve
 3. Start API Service
-   - Activate virtual environment and go to ./source/ and run ''' python api_controller.py ''' command.
+   - Activate virtual environment and go to ./source/ and run
+     > python api_controller.py
 >VISIT "http://localhost:4200/"
 ## Screenshots
 <!--
