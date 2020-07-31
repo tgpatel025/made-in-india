@@ -8,6 +8,7 @@ from flask import request, jsonify, make_response
 
 app = flask.Flask(__name__)
 app.config['DEBUG'] = True
+app.config['ENV'] = 'development'
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
@@ -16,7 +17,6 @@ def api_search():
     if 'q' in request.args:
         highlighted = None
         try:
-            scrapper.scrape(str(request.args['q']))
             phrase = search.get_phrase_fixer(str(request.args['q']))
             if len(phrase["suggest"]["phrase-fixer"][0]["options"]) > 0:
                 text = phrase["suggest"]["phrase-fixer"][0]["options"][0]["text"]
@@ -52,6 +52,19 @@ def api_predictive_term():
     else:
         return flask.Response(status=400)
     return make_response(jsonify(response), 200)
+
+
+@app.route('/api/scrape', methods=['GET'])
+def api_scrapping():
+    if 'q' in request.args:
+        try:
+            scrapper.scrape(str(request.args['q']))
+        except Exception as e:
+            logging.exception("Exception")
+            return make_response(jsonify(e), 500)
+    else:
+        return flask.Response(status=400)
+    return make_response(True, 200)
 
 
 if __name__ == '__main__':

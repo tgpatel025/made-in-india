@@ -37,6 +37,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   }
 
   search(query) {
+    this.apiCallService.scrape(query);
     this.apiCallService.search(query).then(response => {
       this.searchResult = response;
     });
