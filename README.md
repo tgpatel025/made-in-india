@@ -5,18 +5,20 @@ This full fledge project that scrapes data from Flipkart and displayes only Indi
   - Overview
   - Prerequisites
   - Setting Up Your Machine
+  - Activating Virtual Environment
+  - Installing python packages
   - Installing Requirements
   - Starting Project
   - Screenshots
   - TO-DO
   
 ### Overview
-As we all know the situation between India and China we also know that majority of online stores keep Chinese products.As our hectic daily schedule we don't have time to check the origin every product. So to overcome that problem here is a solution to it. We provide the scraped data from flipkart that has an origin of India.
+As we all know the current conflict between India and China also the majority of online stores keep enormous quantity of chinese product. As an Indian we should avoid buying chinese product.While everyone occupied in their daily hectic schedule no one has time to check the origin of country for each product so here we are to offer a unique  solution to that, our website scrapes the real-time data from Flipkart and displays only the products that have originated from India. 
 
 ### Prerequisites 
 1. Angular(FrontEnd) 
 2. Python(BackEnd)
-3. WebScrapping/Crawling 
+3. Selenium(WebScrapping/Crawling) 
 4. Elastic Search
 5. MySQL
 
@@ -51,34 +53,34 @@ As we all know the situation between India and China we also know that majority 
       - Product_Generic_Name
       - Product_Img_Url
       - Product_Link   
-   3. Go to made-in-india/web-scrapper-tool/source/main_scrapper.py
+   3. Go to directory:  "./made-in-india/web-scrapper-tool/source/main_scrapper.py"
       > On line no. 206 change the user name, password and database as per user   
       
 ### Activating Virtual Environment
-- Go to ./web-scrapper-tool/webscrappingenv/Scripts and run
+- Go to directory "./web-scrapper-tool/webscrappingenv/Scripts" and run
   > activate
   
 ### Installing python packages
-- Install the Requirements file (./web-scrapper-tool/requirement.txt) by following command based on which pip you are using:
+- Install the Requirements file ("./web-scrapper-tool/requirement.txt") by following command based on which pip you are using:
    > pip install -r requirements.txt or pip3 install -r requirements.txt
-- Go to ./web-scrapper-tool/
+- Go to dir "./web-scrapper-tool/"
    > pip install -e . or pip3 install -e .
-- Go to ./web-scrapper-tool/source/
+- Go to "./web-scrapper-tool/source/"
    > pip install -e . or pip3 install -e .
    
 ### Starting Project
 1. Start Elastic Search Server
    - Go to the unzipped elastic search folder
-   - open elasticsearch.bat(../elasticsearch-7.8.0/bin/elasticsearch.bat)
+   - open elasticsearch.bat("./elasticsearch-7.8.0/bin/elasticsearch.bat")
    - To check weather it has started visit
     > http://localhost:9200/
 2. Start Node Server
    - Go to the folder that that conatins the download/cloned reop where you have installed angular.
-   - Open cmd in following directory - ./client/
+   - Open cmd in following directory : "./client/"
    - Type the following command to start node server
      > ng serve
 3. Start API Service
-   - Activate virtual environment and go to ./web-scrapper-tool/source/ and run
+   - Activate virtual environment and go to directory "./web-scrapper-tool/source/" and run
      > python api_controller.py
 > VISIT http://localhost:4200/
 
