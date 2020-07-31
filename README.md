@@ -71,7 +71,7 @@ As we all know the situation between India and China we also know that majority 
    - Type the following command to start node server
      > ng serve
 3. Start API Service
-   - Activate virtual environment and go to ./source/ and run
+   - Activate virtual environment and go to ./web-scrapper-tool/source/ and run
      > python api_controller.py
 >VISIT "http://localhost:4200/"
 ## Screenshots
