@@ -58,9 +58,13 @@ As we all know the situation between India and China we also know that majority 
 - Go to ./web-scrapper-tool/webscrappingenv/Scripts and run
   > activate
   
-### Installing requirements.txt
+### Installing python packages
 - Install the Requirements file (./web-scrapper-tool/requirement.txt) by following command based on which pip you are using:
    > pip install -r requirements.txt or pip3 install -r requirements.txt
+- Go to ./web-scrapper-tool/
+   > pip install -e . or pip3 install -e .
+- Go to ./web-scrapper-tool/source/
+   > pip install -e . or pip3 install -e .
    
 ### Starting Project
 1. Start Elastic Search Server
