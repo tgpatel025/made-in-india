@@ -5,7 +5,7 @@ This full fledge project that scrapes data from Flipkart and displayes only Indi
   - Overview
   - Prerequisites
   - Setting Up Your Machine
-  - Activating Virtual Environment
+  - Creating and Activating Virtual Environment
   - Installing python packages
   - Installing Requirements
   - Starting Project
@@ -56,9 +56,13 @@ As we all know that there is a current conflict between India and China. The maj
    3. Go to directory:  "./made-in-india/web-scrapper-tool/source/main_scrapper.py"
       > On line no. 206 change the user name, password and database as per user   
       
-### Activating Virtual Environment
-- Go to directory "./web-scrapper-tool/webscrappingenv/Scripts" and run
-  > activate
+### Creating and Activating Virtual Environment
+- Open Command prompt and run 
+  > py -m pip install --user virtualenv
+- Now Create You Virtual Environment, Go to directory "./web-scrapper-tool/" and run
+  > py -m venv webscrappingenv
+- To Activate it run
+  > .\webscrappingenv\Scripts\activate
   
 ### Installing python packages
 - Install the Requirements file ("./web-scrapper-tool/requirement.txt") by following command based on which pip you are using:
