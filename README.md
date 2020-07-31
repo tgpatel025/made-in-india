@@ -91,11 +91,11 @@ This Basic Search Bar:
 This is how the Products are displayed after we have searched a product:
 ![product](https://user-images.githubusercontent.com/51474690/88975790-7707f300-d2d8-11ea-8260-f5f99ba08ddf.jpeg)
 
-## TO-DO
+### TO-DO
 - [ ] Scrape More Online Stores.
 - [ ] Parallel Scrapping.
 
-## Extra
+### Extra
 - To view how we are scrapping from python, Go to "./web-scrapper-tool/source/main_scrapper.py" and comment line no. 207 and 208.
 
 **If you encounter any issue and have any suggestion while using code, feel free to contact on yadavyogesh9999@gmail.com or tapan.vach025@gmail.com**
