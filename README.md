@@ -1,4 +1,4 @@
-# made-in-india
+# web scrapper for flipkart
 This full fledge project that scrapes data from Flipkart and displayes only Indian Products.
 
 ## Content
